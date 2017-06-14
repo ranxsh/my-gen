@@ -13,12 +13,13 @@ public class DownloadFile extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String path = request.getSession().getServletContext().getRealPath(File.separator);
+//        String path = request.getSession().getServletContext().getRealPath(File.separator) + "tmp";
+        String path =  this.getClass().getClassLoader().getResource("/").getPath() + "tmp";
         String fileName = request.getParameter("fileName");
         InputStream in = null;
         OutputStream out = null;
         try{
-            in = new FileInputStream(path + fileName);
+            in = new FileInputStream(path + "/" +fileName);
             byte[] buffer = new byte[1024];
             out = response.getOutputStream();
             int readLength;

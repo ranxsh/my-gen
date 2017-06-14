@@ -55,7 +55,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div class="form-group">
 				<label for="connection" class="col-lg-2 control-label">数据库连接</label>
 				<div class="col-lg-10">
-					<input type="text" class="form-control" placeholder="192.168.0.90" id="connection" name="connection" required/>
+					<input type="text" class="form-control" placeholder="192.168.0.90" id="connection" name="host" required/>
 				</div>
 			</div>
 			
@@ -66,64 +66,70 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 				<label for="dataBase" class="col-lg-2 control-label">数据库</label>
 				<div class="col-xs-4">
-					<input type="text" placeholder="databaseName" id="dataBase" name="dataBase" class="form-control" required/>
+					<input type="text" placeholder="databaseName" id="dataBase" name="dbName" class="form-control" required/>
 				</div>
 			</div>
 			
 			<div class="form-group">
 				<label for="userId" class="col-lg-2 control-label">用户名</label>
 				<div class="col-xs-4">
-					<input type="text" placeholder="root" id="userId" name="userId" class="form-control" required/>
+					<input type="text" placeholder="root" id="userId" name="userName" class="form-control" required/>
 				</div>
 				<label for="userPass" class="col-lg-2 control-label">密码</label>
 				<div class="col-xs-4">
-					<input type="text" placeholder="password" id="userPass" name="userPass" class="form-control" required/>
+					<input type="text" placeholder="password" id="userPass" name="password" class="form-control" required/>
 				</div>
 			</div>
-			
 			<div class="form-group">
-				<label for="modelPath" class="col-lg-2 control-label">模型的包名路径</label>
+				<label for="modelPath" class="col-lg-2 control-label">包名路径</label>
 				<div class="col-lg-10">
-					<input type="text" class="form-control" placeholder="com.yourCompany.core.entity" id="modelPath" name="modelPath" required/>
+					<input type="text" class="form-control" placeholder="com.yourCompany.core.entity" id="modelPath" name="genPackage" required/>
 				</div>
 			</div>
-			
-			<div class="form-group">
-				<label for="daoPath" class="col-lg-2 control-label">DAO的包名路径</label>
-				<div class="col-lg-10">
-					<input type="text" class="form-control" placeholder="com.yourCompany.core.dao" id="daoPath" name="daoPath" required/>
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label for="mappingPath" class="col-lg-2 control-label">映射文件的路径</label>
-				<div class="col-lg-10">
-					<input type="text" class="form-control" placeholder="mybatis.mapper" id="mappingPath" name="mappingPath" required/>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="mappingPath" class="col-lg-2 control-label">模型是否驼峰命名</label>
-				<div class="col-lg-10">
-					<select id="isHump" name="isHump" class="form-control">
-						<option value="0" >是</option>
-						<option value="1" >否</option>
-					</select>
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label for="tableNames" class="col-lg-2 control-label">表名</label>
-				<div class="col-xs-3">
-					<input type="text" id="tableNames" name="tableNames" class="form-control" placeholder="table_name" required/>
-				</div>
-				<label for="modelNames" class="col-lg-2 control-label">模型名</label>
-				<div class="col-xs-3">
-					<input type="text" id="modelNames" name="modelNames" class="form-control" placeholder="TableName" required/>
-				</div>
-				<a class="btn btn-success btn-xs" onclick="addItem()" title="增加">
-					<span class="fui-check">&nbsp;增加</span>
-				</a>
-			</div>
+			<%--
+                        <div class="form-group">
+                            <label for="modelPath" class="col-lg-2 control-label">模型的包名路径</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" placeholder="com.yourCompany.core.entity" id="modelPath" name="modelPath" required/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="daoPath" class="col-lg-2 control-label">DAO的包名路径</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" placeholder="com.yourCompany.core.dao" id="daoPath" name="daoPath" required/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mappingPath" class="col-lg-2 control-label">映射文件的路径</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" placeholder="mybatis.mapper" id="mappingPath" name="mappingPath" required/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mappingPath" class="col-lg-2 control-label">模型是否驼峰命名</label>
+                            <div class="col-lg-10">
+                                <select id="isHump" name="isHump" class="form-control">
+                                    <option value="0" >是</option>
+                                    <option value="1" >否</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    <div class="form-group">
+                            <label for="tableNames" class="col-lg-2 control-label">表名</label>
+                            <div class="col-xs-3">
+                                <input type="text" id="tableNames" name="tableNames" class="form-control" placeholder="table_name" required/>
+                            </div>
+                            <label for="modelNames" class="col-lg-2 control-label">模型名</label>
+                            <div class="col-xs-3">
+                                <input type="text" id="modelNames" name="modelNames" class="form-control" placeholder="TableName" required/>
+                            </div>
+                            <a class="btn btn-success btn-xs" onclick="addItem()" title="增加">
+                                <span class="fui-check">&nbsp;增加</span>
+                            </a>
+                        </div>--%>
 
 		</form>
 		

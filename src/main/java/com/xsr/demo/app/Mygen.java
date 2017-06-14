@@ -12,6 +12,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +28,13 @@ public class Mygen {
     private String tplPath;// = rootFilePath + "/tpl";
     private File genFolder; // = new File(ROOT_FILE_PATH_DESC + "");
     private  String genPackage = "com.xsr.demo";
-    private  GroupTemplate group ; //= new GroupTemplate(new File(PACKAGE_PATH));
+    private GroupTemplate group ; //= new GroupTemplate(new File(PACKAGE_PATH));
 
     private String host;
     private String port;
     private String password;
+    private String userName;
+    private String dbName;
     List<String> tableNameList;
 
 //    TableTrans tableTrans;
@@ -39,12 +42,14 @@ public class Mygen {
     Map<String, TableMetadata> tableMetadataMap = new HashMap<String, TableMetadata>();
     Map<String, TableTrans> transMap = new ConcurrentHashMap<String, TableTrans>();
 
-    public Mygen(String host,String port,String userName,String password, String genPackage, List<String> tableNameList){
+    public Mygen(String host,String port, String dbName,String userName,String password, String genPackage, List<String> tableNameList){
         this.genPackage = genPackage;
         this.host = host;
         this.port = port;
+        this.userName = userName;
         this.password = password;
         this.tableNameList = tableNameList;
+        this.dbName = dbName;
         init();
     }
 
@@ -52,7 +57,7 @@ public class Mygen {
 
         String path = "";
         group.setCharset("UTF-8");
-        Connection conn = DBUtils.getConn();
+        Connection conn = DBUtils.getConn(host, port,userName, password, dbName);
         DatabaseMetaData dbmd = DBUtils.getDatabaseMetaData(conn);
         String dbType = "MySQL" ;
         dbType = dbmd.getDatabaseProductName();
@@ -78,15 +83,17 @@ public class Mygen {
 //            generateDialogInfoHtml(tableName, dbType);
 //            generateDialogUpdateHtml(tableName, dbType);
         }
-        return path;
+        return rootFilePath;
     }
 
     private void init(){
-        rootFilePath = this.getClass().getClassLoader().getResource("/").getPath() ;App.class.getResource("/").getPath().replace("%20", " ");
-        tplPath = rootFilePath + "/tpl";
+        rootFilePath = this.getClass().getClassLoader().getResource("/").getPath() ;
+//        App.class.getResource("/").getPath().replace("%20", " ");
+        tplPath = rootFilePath + "tpl";
         group = new GroupTemplate(new File(tplPath));
-        String rootFilePath = "D:\\temp\\mygen";
-        genFolder = new File(rootFilePath + "");
+//        String rootFilePath = "D:\\temp\\mygen";
+        rootFilePath = rootFilePath + "tmp/src" + new Date().getTime();
+        genFolder = new File(rootFilePath);
     }
 
     private void generateDialogInfoHtml(String tableName, String dbType) throws Exception {

@@ -2,6 +2,8 @@ package com.xsr.demo.servlet;
 
 import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
+import com.xsr.demo.app.Mygen;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +15,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
@@ -52,6 +56,43 @@ public class GeneratorServlet extends HttpServlet {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String host = request.getParameter("host");
+        String port = request.getParameter("port");
+        String password = request.getParameter("password");
+        String userName = request.getParameter("userName");
+        String dbName = request.getParameter("dbName");
+        String genPackage = request.getParameter("genPackage");
+        List<String> tableNameList;
+        Mygen mygen = new Mygen(host, port,dbName,userName,password,genPackage, null);
+        String folderPath = null;
+        try{
+            folderPath = mygen.gen();
+        }catch (Exception ex){
+        }
+        final String zipFileName = StringUtils.substringAfterLast(folderPath, "/");
+        final String path = folderPath;
+
+        if(fileToZip(folderPath,StringUtils.substringBeforeLast(folderPath,"/"), zipFileName)){
+            responseJson(response,"1",zipFileName + ".zip");
+        }else {
+            responseJson(response,"0",zipFileName + ".zip");
+        };
+
+
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(300000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                File dirFile = new File(path );
+    					File zipFile = new File(StringUtils.substringBeforeLast(path, "/") + zipFileName);
+    					deleteDir(dirFile);
+    					deleteDir(zipFile);
+            }
+        });
+
 
 	}
 //    	try {
@@ -197,11 +238,14 @@ public class GeneratorServlet extends HttpServlet {
 //			}
 //		}
 //	}
-    
-    /** 
-     * 执行压缩操作 
-     * @param srcPathName 被压缩的文件/文件夹 
-     */  
+
+    /**
+     * 执行压缩操作
+     * @param sourceFilePath
+     * @param zipFilePath
+     * @param fileName
+     * @return
+     */
     public boolean fileToZip(String sourceFilePath, String zipFilePath, String fileName) {    
     	boolean flag = false;
         File file = new File(sourceFilePath);    

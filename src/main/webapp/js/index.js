@@ -61,7 +61,7 @@ function doSubmit(){
 			}else{
 				//alert("操作成功");
 				doStorageCookies();//存储到cookie
-				window.open(basePath + "/downloadFIle" +data.zipName);
+				window.open(basePath + "/downloadFile.do?fileName=" +data.zipName);
 			}
 	    },
 		error: function(data, textStatus){
