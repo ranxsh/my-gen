@@ -1,11 +1,7 @@
 package com.xsr.demo.mygen.trans;
 
-
 import com.xsr.demo.mygen.def.ColumnMetadata;
-import com.xsr.demo.mygen.def.TableMetadata;
 import com.xsr.demo.utils.SqlTypeUtils;
-
-import java.util.Map;
 
 public class ColumnTrans extends Trans {
 

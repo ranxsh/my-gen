@@ -1,12 +1,9 @@
 package com.xsr.demo.mygen.def;
 
-
 import com.xsr.demo.utils.IteratorableHashMap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TableMetadata {
 
@@ -39,6 +36,8 @@ public class TableMetadata {
 	private IteratorableHashMap<String, ColumnMetadata> columns = new IteratorableHashMap<String, ColumnMetadata>();
 	private List<LinkMetadata> links = new ArrayList<LinkMetadata>();
 	private List<LinkMetadata> linkBys = new ArrayList<LinkMetadata>();
+
+	private  ColumnMetadata incColumnMetadata ;
 
 	public void addLink(LinkMetadata link) {
 		this.links.add(link);
@@ -127,4 +126,11 @@ public class TableMetadata {
 		this.remarks = remarks;
 	}
 
+	public ColumnMetadata getIncColumnMetadata() {
+		return incColumnMetadata;
+	}
+
+	public void setIncColumnMetadata(ColumnMetadata incColumnMetadata) {
+		this.incColumnMetadata = incColumnMetadata;
+	}
 }

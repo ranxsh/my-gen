@@ -9,67 +9,38 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class ${table.upperStartClassName} {
 
 	private static final long serialVersionUID = 1L;
-    
+
+	<%for(column in table.keys) {%>
+	/**
+     * ${column.remarks}
+     */
+    private ${column.javaType} ${column.lowerStartFieldName};
+	<% } %>
+
     <% for(each in table.columns) { %>
 	/**
 	 * ${each.remarks}
 	 */
     private ${each.javaType} ${each.lowerStartFieldName};
     <% } %>
-    
-	<%for(eachColumn in table.links) { 
-           var targetTable = eachColumn.targetTableTrans; %>
-    /**
-	 * 
-	 */        
-    private ${targetTable.upperStartClassName} ${targetTable.lowerStartClassName};
-	<%} %>
-	<%for(eachColumn in table.linkBys) {
-           var fromTable = eachColumn.fromTableTrans; %>
-    /**
-	 * 
-	 */        
-    private List<${fromTable.upperStartClassName }> ${fromTable.lowerStartClassName }List=new ArrayList<${fromTable.upperStartClassName }>(0);
-	<%}%>
-    
-    public ${table.upperStartClassName}(){}
-    
-    
-    public ${table.upperStartClassName}(Long id){
-    	this.id=id;
-    }
-    
-    <% for(each in table.columns) { %>
+
+	<%for(each in table.keys) {%>
     public ${each.javaType} get${each.upperStartFieldName}() {
         return this.${each.lowerStartFieldName};
     }
-    
+    public void set${each.upperStartFieldName}(${each.javaType} ${each.lowerStartFieldName}) {
+        this.${each.lowerStartFieldName} = ${each.lowerStartFieldName};
+    }
+	<% } %>
+    <% for(each in table.columns) { %>
+
+    public ${each.javaType} get${each.upperStartFieldName}() {
+        return this.${each.lowerStartFieldName};
+    }
     public void set${each.upperStartFieldName}(${each.javaType} ${each.lowerStartFieldName}) {
         this.${each.lowerStartFieldName} = ${each.lowerStartFieldName};
     }
     <%}%>
-    
-	<%for(eachColumn in table.links) { 
-           var targetTable = eachColumn.targetTableTrans; %>
-    public ${targetTable.upperStartClassName} get${targetTable.upperStartClassName}() {
-        return this.${targetTable.lowerStartClassName};
-    }
-    
-    public void set${targetTable.upperStartClassName}(${targetTable.upperStartClassName} ${targetTable.lowerStartClassName}) {
-        this.${targetTable.lowerStartClassName} = ${targetTable.lowerStartClassName};
-    }
-	<%}%>
-
-	<%for(eachColumn in table.linkBys) {
-           var fromTable = eachColumn.fromTableTrans; %>
-    public List<${fromTable.upperStartClassName }> get${fromTable.upperStartClassName }List() {
-        return this.${fromTable.lowerStartClassName }List;
-    }
-    
-    public void set${fromTable.upperStartClassName }List(List<${fromTable.upperStartClassName }> ${fromTable.lowerStartClassName }List) {
-        this.${fromTable.lowerStartClassName }List = ${fromTable.lowerStartClassName }List;
-    }
-	<%}%>
 
 	@Override
 	public String toString() {

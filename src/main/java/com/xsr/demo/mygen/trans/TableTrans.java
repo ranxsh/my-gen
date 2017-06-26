@@ -1,6 +1,5 @@
 package com.xsr.demo.mygen.trans;
 
-
 import com.xsr.demo.mygen.def.ColumnMetadata;
 import com.xsr.demo.mygen.def.LinkMetadata;
 import com.xsr.demo.mygen.def.TableMetadata;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class TableTrans extends Trans {
 
@@ -22,6 +20,7 @@ public class TableTrans extends Trans {
 	private List<LinkTrans> linkByList;
 	private List<ColumnTrans> keyList;
 	private List<ColumnTrans> columns;
+	private ColumnTrans incColemn;
 
 	public TableTrans(String tableName, Map<String, TableMetadata> tableMetadataMap) {
 		this.meta = tableMetadataMap.get(tableName);
@@ -77,6 +76,14 @@ public class TableTrans extends Trans {
 		return this.alias;
 	}
 
+	public ColumnTrans getIncColumn() {
+		return incColemn == null ? incColemn = buildIncColumnTrans(meta) : incColemn;
+	}
+
+	public void setIncColumn(ColumnTrans incColemn) {
+		this.incColemn = incColemn;
+	}
+
 	private List<LinkTrans> buildTrans(List<LinkMetadata> links) {
 		List<LinkTrans> result = new ArrayList<LinkTrans>();
 		for (LinkMetadata link : links)
@@ -92,6 +99,14 @@ public class TableTrans extends Trans {
 		while (it.hasNext()) {
 			entry = it.next();
 			result.add(new ColumnTrans(entry.getValue(), this));
+		}
+		return result;
+	}
+
+	private ColumnTrans buildIncColumnTrans(TableMetadata meta) {
+		ColumnTrans result = null;
+		if(meta.getIncColumnMetadata() != null){
+			result = new ColumnTrans(meta.getIncColumnMetadata(),this);
 		}
 		return result;
 	}

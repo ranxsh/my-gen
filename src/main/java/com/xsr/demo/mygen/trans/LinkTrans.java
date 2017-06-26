@@ -1,6 +1,5 @@
 package com.xsr.demo.mygen.trans;
 
-
 import com.xsr.demo.mygen.def.LinkMetadata;
 
 public class LinkTrans extends Trans {

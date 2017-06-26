@@ -1,7 +1,7 @@
 package ${package}.dao;
 
 import ${package}.entity.${table.upperStartClassName };
-import com.magic.common.MybatisDao;
+//import com.magic.common.MybatisDao;
 
 public interface ${table.upperStartClassName }Dao {
 
