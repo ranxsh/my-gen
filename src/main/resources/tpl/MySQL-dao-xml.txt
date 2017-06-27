@@ -6,13 +6,17 @@
   	<% if( table.incColumn != null )  {%>
   	    <id column="${table.incColumn.name}" property="${table.incColumn.lowerStartFieldName}" jdbcType="${table.incColumn.jdbcType}" />
   	<% } %>
+  	<% for(key in table.keys) { %>
+  	<% if( table.incColumn != null && table.incColumn.name != key.name)  {%>
+  	    <result column="${key.name}" property="${key.lowerStartFieldName}" jdbcType="${key.jdbcType}" />
+  	<% } %>
+  	<% } %>
   	<% for(column in table.columns) { %>
   	    <result column="${column.name}" property="${column.lowerStartFieldName}" jdbcType="${column.jdbcType}" />
   	<% } %>
   	</resultMap>
 
-    <sql id="Base_Column_List" >
-        <% if( table.incColumn != null ){%>${table.incColumn.name},<% } %>
+    <sql id="Base_Column_List"><% if(table.incColumn != null){%>${table.incColumn.name},<%}%>
         <% for(key in table.keys) { %>
             <%if(keyLP.last){%>
                 <%if(table.columns == null){ %>
@@ -33,14 +37,89 @@
         <% } %>
     </sql>
 
-    <% if( table.incColumn != null )  {%>
-    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="${table.incColumn.jdbcType}" >
+    <sql id="whereSql">
+        <% if( table.incColumn != null ){%>
+        and ${table.incColumn.name} = #{${table.incColumn.lowerStartFieldName}}
+        <% } %>
+        <% for(key in table.keys) { %>
+        <% if( table.incColumn != null && table.incColumn.name != key.name)  {%>
+        and ${key.name} = #{${key.lowerStartFieldName}}
+        <% } %>
+        <% } %>
+        <% for(column in table.columns) { %>
+        and ${column.name} = #{${column.lowerStartFieldName}}
+        <% } %>
+    </sql>
+
+    <% if(table.incColumn != null){%>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="${table.incColumn.lowerStartFieldName}" parameterType="${package}.entity.${table.upperStartClassName}">
+    <%}else{%>
+    <insert id="insert" parameterType="${package}.entity.${table.upperStartClassName}">
+    <%}%>
+    insert into ${table.name}(
+            <trim prefix="" prefixOverrides=",">
+            	<% for(key in table.keys) { %>
+            	<% if( table.incColumn != null && table.incColumn.name == key.name)  {%>
+                ,${key.name}
+            	<% }else{ %>
+            	<if test="${key.lowerStartFieldName} != null">
+            	,${key.name}
+            	</if>
+            	<% } %>
+            	<% } %>
+            	<% for(column in table.columns) { %>
+            	<if test="${column.lowerStartFieldName} != null">
+            	,${column.name}
+            	</if>
+            	<% } %>
+            </trim>
+    )values(
+            <trim prefix="" prefixOverrides=",">
+            	<% for(key in table.keys) { %>
+            	<% if( table.incColumn != null && table.incColumn.name == key.name)  {%>
+            	,#{${key.lowerStartFieldName}}
+            	<% }else{ %>
+            	<if test="${key.lowerStartFieldName} != null">
+            	,#{${key.lowerStartFieldName}}
+            	</if>
+            	<% } %>
+            	<% } %>
+            	<% for(column in table.columns) { %>
+            	<if test="${column.lowerStartFieldName} != null">
+            	,#{${column.lowerStartFieldName}}
+            	</if>
+            	<% } %>
+            </trim>
+    )
+    </insert>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
         select
         <include refid="Base_Column_List" />
         from ${table.name}
-        where ${table.incColumn.name} = #{${table.incColumn.name},jdbcType=${table.incColumn.jdbcType}}
+        <% if( table.keys == null || table.keys.~size == 0 ){%>
+        where 1 = 2
+        <%}else{%>
+        where ${table.keys[0].name} = #{${table.keys[0].lowerStartFieldName},jdbcType=${table.keys[0].jdbcType}}
+        <% } %>
     </select>
-    <% } %>
+
+    <select id="selectByPrimaryKeyList" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from ${table.name}
+        <% if( table.keys == null || table.keys.~size == 0 ){%>
+        where 1 = 2
+        <%}else{%>
+        where ${table.keys[0].name} in
+        <foreach collection="list" item="item" index="index"  open="(" close=")" separator=",">
+            #{item,jdbcType=${table.keys[0].jdbcType}}
+        </foreach>
+        <% } %>
+    </select>
+
+
+
 
 	<!--The user defined SQL!-->
   	

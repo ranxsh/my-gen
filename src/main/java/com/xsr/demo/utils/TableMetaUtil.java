@@ -16,6 +16,7 @@ import java.util.Map;
  */
 public class TableMetaUtil {
 
+
     public static final Logger log = Logger.getLogger(DBUtils.class);
 
     public static void loadMetadata(DatabaseMetaData dbmd, Map<String, TableMetadata> tableMetadataMap) {
@@ -36,10 +37,10 @@ public class TableMetaUtil {
                 while (rs.next()) {
                     solvePrimaryKey(rs, tableMetadataMap);
                 }
-                rs = dbmd.getImportedKeys(null, null, table.getTableName());
-                while (rs.next()) {
-                    solveForeignKey(rs, tableMetadataMap);
-                }
+//                rs = dbmd.getImportedKeys(null, null, table.getTableName());
+//                while (rs.next()) {
+//                    solveForeignKey(rs, tableMetadataMap);
+//                }
             }
         } catch (SQLException e) {
             throw new RuntimeException("获取表信息出错", e);
@@ -67,7 +68,13 @@ public class TableMetaUtil {
         String tableName = rs.getString("TABLE_NAME");
         String columnName = rs.getString("COLUMN_NAME");
         TableMetadata tableMetadata = tableMetadataMap.get(tableName);
-        ColumnMetadata keyColumn = tableMetadata.getColumns().remove(columnName);
+        ColumnMetadata keyColumn = null;
+        if(tableMetadata.getIncColumnMetadata() != null && columnName.equalsIgnoreCase(tableMetadata.getIncColumnMetadata().getColumnName())){
+            keyColumn = tableMetadata.getIncColumnMetadata();
+        }else{
+            keyColumn = tableMetadata.getColumns().remove(columnName);
+        }
+
         tableMetadata.getKeys().put(columnName, PKColumnMetadata.from(keyColumn));
         log.debug(String.format("  表【%s】中的【%s】列标记为主键", tableName, columnName));
     }
@@ -108,7 +115,13 @@ public class TableMetaUtil {
         column.setIsAutoincrement(rs.getString("IS_AUTOINCREMENT  ".trim()));
         TableMetadata targetTable = tableMetadataMap.get(column.getTableName());
         column.setTableMetadata(targetTable);
-        targetTable.addColumn(column);
-        log.debug(String.format("  表【%s】发现列【%s】，列类型为【%s】", column.getTableName(), column.getColumnName(), column.getTypeName()));
+        if("YES".equalsIgnoreCase(column.getIsAutoincrement())){
+            targetTable.setIncColumnMetadata(column);
+            log.debug(String.format("  表【%s】发现列【%s】，列类型为【%s】 IS_AUTOINCREMENT", column.getTableName(), column.getColumnName(), column.getTypeName()));
+        }else{
+            targetTable.addColumn(column);
+            log.debug(String.format("  表【%s】发现列【%s】，列类型为【%s】", column.getTableName(), column.getColumnName(), column.getTypeName()));
+        }
     }
+
 }

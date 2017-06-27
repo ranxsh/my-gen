@@ -20,7 +20,7 @@ public class TableTrans extends Trans {
 	private List<LinkTrans> linkByList;
 	private List<ColumnTrans> keyList;
 	private List<ColumnTrans> columns;
-	private ColumnTrans incColemn;
+	private ColumnTrans incColumn;
 
 	public TableTrans(String tableName, Map<String, TableMetadata> tableMetadataMap) {
 		this.meta = tableMetadataMap.get(tableName);
@@ -77,11 +77,11 @@ public class TableTrans extends Trans {
 	}
 
 	public ColumnTrans getIncColumn() {
-		return incColemn == null ? incColemn = buildIncColumnTrans(meta) : incColemn;
+		return incColumn == null ? incColumn = buildIncColumnTrans(meta) : incColumn;
 	}
 
-	public void setIncColumn(ColumnTrans incColemn) {
-		this.incColemn = incColemn;
+	public void setIncColumn(ColumnTrans incColumn) {
+		this.incColumn = incColumn;
 	}
 
 	private List<LinkTrans> buildTrans(List<LinkMetadata> links) {

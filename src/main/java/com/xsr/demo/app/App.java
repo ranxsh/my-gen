@@ -23,11 +23,11 @@ public class App {
         String port = "3306";
         String userName = "root";
         String password = "admin";
-        String genPackage = "com.xsr.demo";
+        String genPackage = "com.xsr.gen";
         String dbName = "jeesite";
         List<String> tableNameList = new ArrayList<String>();
 
-        Mygen mygen = new Mygen(host, port,dbName, userName, password, genPackage, tableNameList);
+        MygenTest mygen = new MygenTest(host, port,dbName, userName, password, genPackage, tableNameList);
         try {
             mygen.gen();
         } catch (Exception e) {
