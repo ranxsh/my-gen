@@ -39,7 +39,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
           </button>
-          <a class="navbar-brand" href="#">Generator-Web</a>
+          <a class="navbar-brand" href="#">Generator-在线</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
